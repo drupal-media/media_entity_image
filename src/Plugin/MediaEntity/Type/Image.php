@@ -102,7 +102,7 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
         'model' => t('Came model'),
         'created' => t('Image creation datetime'),
         'iso' => t('Iso'),
-        'shutter_speed' => t('Shutter speed value'),
+        'exposure' => t('Exposure time'),
         'apperture' => t('Apperture value'),
         'focal_lenght' => t('Focal lenght'),
       );
@@ -152,11 +152,11 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
         case 'iso':
           return $this->getExifField($uri, 'ISOSpeedRatings');
 
-        case 'shutter_speed':
-          return $this->getExifField($uri, 'ShutterSpeedValue');
+        case 'exposure':
+          return $this->getExifField($uri, 'ExposureTime');
 
         case 'apperture':
-          return $this->getExifField($uri, 'ApertureValue');
+          return $this->getExifField($uri, 'FNumber');
 
         case 'focal_lenght':
           return $this->getExifField($uri, 'FocalLength');
