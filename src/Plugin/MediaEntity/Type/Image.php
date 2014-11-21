@@ -10,12 +10,12 @@ namespace Drupal\media_entity_image\Plugin\MediaEntity\Type;
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityManager;
+use Drupal\Core\Image\ImageFactory;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\media_entity\MediaTypeException;
 use Drupal\media_entity\MediaTypeInterface;
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -47,6 +47,13 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
   protected $entityManager;
 
   /**
+   * The image factory service..
+   *
+   * @var \Drupal\Core\Image\ImageFactory;
+   */
+  protected $imageFactory;
+
+  /**
    * The exif data.
    *
    * @var array.
@@ -62,10 +69,15 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
+   * @param \Drupal\Core\Entity\EntityManager $entity_manager
+   *   Entity manager service.
+   * @param \Drupal\Core\Image\ImageFactory $image_factory
+   *   The image factory.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManager $entity_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManager $entity_manager, ImageFactory $image_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityManager = $entity_manager;
+    $this->imageFactory = $image_factory;
   }
 
   /**
@@ -76,7 +88,8 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('entity.manager')
+      $container->get('entity.manager'),
+      $container->get('image.factory')
     );
   }
 
@@ -99,7 +112,7 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
 
     if (!empty($this->configuration['gather_exif'])) {
       $fields += array(
-        'model' => t('Came model'),
+        'model' => t('Camera model'),
         'created' => t('Image creation datetime'),
         'iso' => t('Iso'),
         'exposure' => t('Exposure time'),
@@ -119,7 +132,7 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
 
     // Get the file, image and exif data.
     $file = $this->entityManager->getStorage('file')->load($media->{$source_field}->first()->{$property_name});
-    $image = \Drupal::service('image.factory')->get($file->getFileUri());
+    $image = $this->imageFactory->get($file->getFileUri());
     $uri = $file->getFileUri();
 
     // Return the field.
@@ -140,7 +153,7 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
         return $size ? $size : FALSE;
     }
 
-    if (!empty($this->configuration['gather_exif'])) {
+    if (!empty($this->configuration['gather_exif']) && function_exists('exif_read_data')) {
       switch ($name) {
         case 'model':
           return $this->getExifField($uri, 'Model');
@@ -184,7 +197,7 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
       '#type' => 'select',
       '#title' => t('Field with source information'),
       '#description' => t('Field on media entity that stores Image file.'),
-      '#default_value' => empty($this->configuration['image']['source_field']) ? NULL : $this->configuration['source_field'],
+      '#default_value' => empty($this->configuration['source_field']) ? NULL : $this->configuration['source_field'],
       '#options' => $options,
     );
 
