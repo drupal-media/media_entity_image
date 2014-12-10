@@ -8,6 +8,7 @@
 namespace Drupal\media_entity_image\Plugin\MediaEntity\Type;
 
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\Core\Config\Config;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityManager;
 use Drupal\Core\Image\ImageFactory;
@@ -61,6 +62,13 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
   protected $exif;
 
   /**
+   * Media entity image config object.
+   *
+   * @var \Drupal\Core\Config\Config
+   */
+  protected $config;
+
+  /**
    * Constructs a new class instance.
    *
    * @param array $configuration
@@ -74,10 +82,11 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
    * @param \Drupal\Core\Image\ImageFactory $image_factory
    *   The image factory.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManager $entity_manager, ImageFactory $image_factory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManager $entity_manager, ImageFactory $image_factory, Config $config) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityManager = $entity_manager;
     $this->imageFactory = $image_factory;
+    $this->config = $config;
   }
 
   /**
@@ -89,7 +98,8 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
       $plugin_id,
       $plugin_definition,
       $container->get('entity.manager'),
-      $container->get('image.factory')
+      $container->get('image.factory'),
+      $container->get('config.factory')->get('media_entity_image.settings')
     );
   }
 
@@ -131,6 +141,7 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
     $property_name = $media->{$source_field}->first()->mainPropertyName();
 
     // Get the file, image and exif data.
+    /** @var \Drupal\file\FileInterface $file */
     $file = $this->entityManager->getStorage('file')->load($media->{$source_field}->first()->{$property_name});
     $image = $this->imageFactory->get($file->getFileUri());
     $uri = $file->getFileUri();
@@ -221,6 +232,22 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
    */
   public function validate(MediaInterface $media) {
     // This should be handled by Drupal core.
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function thumbnail(MediaInterface $media) {
+    $source_field = $this->configuration['source_field'];
+
+    /** @var \Drupal\file\FileInterface $file */
+    $file = $this->entityManager->getStorage('file')->load($media->{$source_field}->target_id);
+
+    if (!$file) {
+      return $this->config->get('icon_base') . '/image.png';
+    }
+
+    return $file->getFileUri();
   }
 
   /**
