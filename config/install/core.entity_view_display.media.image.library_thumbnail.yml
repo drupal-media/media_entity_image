@@ -28,7 +28,7 @@ content:
     third_party_settings: {  }
     label: hidden
 hidden:
-  field_image: true
+  image: true
   uid: true
   created: true
 third_party_settings: {  }
