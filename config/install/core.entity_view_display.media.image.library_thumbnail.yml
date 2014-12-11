@@ -13,18 +13,18 @@ targetEntityType: media
 bundle: image
 mode: library_thumbnail
 content:
+  name:
+    type: string
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    label: hidden
   thumbnail:
     type: image
-    weight: 0
+    weight: 1
     settings:
       image_style: media_library
       image_link: ''
-    third_party_settings: {  }
-    label: hidden
-  name:
-    type: string
-    weight: 1
-    settings: {  }
     third_party_settings: {  }
     label: hidden
 hidden:
