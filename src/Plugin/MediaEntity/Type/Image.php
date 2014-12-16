@@ -81,6 +81,8 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
    *   Entity manager service.
    * @param \Drupal\Core\Image\ImageFactory $image_factory
    *   The image factory.
+   * @param \Drupal\Core\Config\Config $config
+   *   Media entity config object.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManager $entity_manager, ImageFactory $image_factory, Config $config) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -99,7 +101,7 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
       $plugin_definition,
       $container->get('entity.manager'),
       $container->get('image.factory'),
-      $container->get('config.factory')->get('media_entity_image.settings')
+      $container->get('config.factory')->get('media_entity.settings')
     );
   }
 
