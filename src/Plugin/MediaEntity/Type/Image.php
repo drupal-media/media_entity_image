@@ -7,17 +7,13 @@
 
 namespace Drupal\media_entity_image\Plugin\MediaEntity\Type;
 
-use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityManager;
 use Drupal\Core\Image\ImageFactory;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
-use Drupal\media_entity\MediaTypeException;
-use Drupal\media_entity\MediaTypeInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\media_entity\MediaTypeBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
@@ -30,22 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   description = @Translation("Provides business logic and metadata for local images.")
  * )
  */
-class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPluginInterface {
-  use StringTranslationTrait;
-
-  /**
-   * Plugin label.
-   *
-   * @var string
-   */
-  protected $label;
-
-  /**
-   * The entity manager object.
-   *
-   * @var \Drupal\Core\Entity\EntityManager;
-   */
-  protected $entityManager;
+class Image extends MediaTypeBase {
 
   /**
    * The image factory service..
@@ -60,13 +41,6 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
    * @var array.
    */
   protected $exif;
-
-  /**
-   * Media entity image config object.
-   *
-   * @var \Drupal\Core\Config\Config
-   */
-  protected $config;
 
   /**
    * Constructs a new class instance.
@@ -85,10 +59,8 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
    *   Media entity config object.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManager $entity_manager, ImageFactory $image_factory, Config $config) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityManager = $entity_manager;
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_manager, $config);
     $this->imageFactory = $image_factory;
-    $this->config = $config;
   }
 
   /**
@@ -103,13 +75,6 @@ class Image extends PluginBase implements MediaTypeInterface, ContainerFactoryPl
       $container->get('image.factory'),
       $container->get('config.factory')->get('media_entity.settings')
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function label() {
-    return $this->label;
   }
 
   /**
