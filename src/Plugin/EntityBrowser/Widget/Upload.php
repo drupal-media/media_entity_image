@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\entity_browser\Plugin\EntityBrowser\Widget\Upload as FileUpload;
 
 /**
- * Uses upload for to create media entity images.
+ * Uses upload to create media entity images.
  *
  * @EntityBrowserWidget(
  *   id = "media_entity_image_upload",
@@ -36,11 +36,11 @@ class Upload extends FileUpload {
   public function getForm(array &$original_form, FormStateInterface $form_state, array $aditional_widget_parameters) {
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     if (!$this->configuration['media bundle'] || !($bundle = $this->entityManager->getStorage('media_bundle')->load($this->configuration['media bundle']))) {
-      return ['#markup' => t('Media bundle is not configured correctly.')];
+      return ['#markup' => t('The media bundle is not configured correctly.')];
     }
 
     if ($bundle->getType()->getPluginId() != 'image') {
-      return ['#markup' => t('Configured bundle is not using image plugin.')];
+      return ['#markup' => t('The configured bundle is not using image plugin.')];
     }
 
     $form = parent::getForm($original_form, $form_state, $aditional_widget_parameters);
