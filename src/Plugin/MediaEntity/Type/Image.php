@@ -197,13 +197,6 @@ class Image extends MediaTypeBase {
   /**
    * {@inheritdoc}
    */
-  public function validate(MediaInterface $media) {
-    // This should be handled by Drupal core.
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function thumbnail(MediaInterface $media) {
     $source_field = $this->configuration['source_field'];
 
