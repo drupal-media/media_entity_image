@@ -70,7 +70,7 @@ class Upload extends FileUpload {
       $images[] = $image;
     }
 
-    $this->selectEntities($images);
+    $this->selectEntities($images, $form_state);
     $this->clearFormValues($element, $form_state);
   }
 
