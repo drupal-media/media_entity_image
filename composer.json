@@ -1,0 +1,14 @@
+{
+  "name": "drupal/media_entity_image",
+  "type": "drupal-module",
+  "description": "Local images integration for media entity.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://github.com/drupal-media/media_entity_image",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://github.com/drupal-media/media_entity_image/issues",
+    "source": "https://github.com/drupal-media/media_entity_image"
+  },
+  "require": { }
+}
