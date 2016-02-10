@@ -201,17 +201,22 @@ class Image extends MediaTypeBase {
   /**
    * {@inheritdoc}
    */
+  public function getDefaultThumbnail() {
+    return $this->config->get('icon_base') . '/image.png';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function thumbnail(MediaInterface $media) {
     $source_field = $this->configuration['source_field'];
 
     /** @var \Drupal\file\FileInterface $file */
-    $file = $this->entityTypeManager->getStorage('file')->load($media->{$source_field}->target_id);
-
-    if (!$file) {
-      return $this->config->get('icon_base') . '/image.png';
+    if ($file = $this->entityTypeManager->getStorage('file')->load($media->{$source_field}->target_id)) {
+      return $file->getFileUri();
     }
 
-    return $file->getFileUri();
+    return $this->getDefaultThumbnail();
   }
 
   /**
