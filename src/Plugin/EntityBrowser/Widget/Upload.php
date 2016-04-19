@@ -74,6 +74,51 @@ class Upload extends FileUpload {
     $this->selectEntities($images, $form_state);
     $this->clearFormValues($element, $form_state);
   }
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
+    $form['extensions'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Allowed extensions'),
+      '#default_value' => $this->configuration['extensions'],
+      '#required' => TRUE,
+    ];
+
+    $bundle_options = [];
+
+    $bundles = $this
+      ->entityManager
+      ->getStorage('media_bundle')
+      ->loadByProperties(['type' => 'image']);
+
+    foreach ($bundles as $bundle) {
+      $bundle_options[$bundle->id()] = $bundle->label();
+    }
+
+    switch (count($bundle_options)) {
+      case 0:
+        $url = Url::fromRoute('media.bundle_add')->toString();
+        $form['media bundle'] = [
+          '#markup' => $this->t("You don't have media bundle of the Image type. You should <a href='!link'>create one</a>", ['!link' => $url]),
+        ];
+        break;
+
+      case 1:
+        $form['media bundle'] = array(
+          '#value' => key($bundle_options),
+        );
+        break;
+
+      default:
+        $form['media bundle'] = array(
+          '#type' => 'select',
+          '#title' => $this->t('Media bundle'),
+          '#default_value' => $this->configuration['media bundle'],
+          '#options' => $bundle_options,
+        );
+    }
+
+    return $form;
+  }
 
   /**
    * {@inheritdoc}
