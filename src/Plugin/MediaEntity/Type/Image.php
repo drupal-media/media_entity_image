@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity_image\Plugin\MediaEntity\Type\Image.
- */
-
 namespace Drupal\media_entity_image\Plugin\MediaEntity\Type;
 
 use Drupal\Core\Config\Config;
@@ -12,7 +7,6 @@ use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Image\ImageFactory;
-use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\media_entity\MediaTypeBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -165,7 +159,7 @@ class Image extends MediaTypeBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    /** @var MediaBundleInterface $bundle */
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $form_state->getFormObject()->getEntity();
     $options = [];
     $allowed_field_types = ['file', 'image'];
@@ -224,7 +218,6 @@ class Image extends MediaTypeBase {
    *
    * @param string $uri
    *   The uri for the file that we are getting the Exif.
-   *
    * @param string $field
    *   The name of the exif field.
    *
@@ -252,4 +245,5 @@ class Image extends MediaTypeBase {
   protected function getExif($uri) {
     return exif_read_data($uri, 'EXIF');
   }
+
 }

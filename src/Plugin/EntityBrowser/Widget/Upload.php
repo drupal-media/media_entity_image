@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Contains \Drupal\media_entity_image\Plugin\EntityBrowser\Widget\Upload.
- */
-
 namespace Drupal\media_entity_image\Plugin\EntityBrowser\Widget;
 
 use Drupal\Core\Form\FormStateInterface;
