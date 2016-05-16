@@ -91,8 +91,8 @@ class Image extends MediaTypeBase {
         'created' => t('Image creation datetime'),
         'iso' => t('Iso'),
         'exposure' => t('Exposure time'),
-        'apperture' => t('Apperture value'),
-        'focal_lenght' => t('Focal lenght'),
+        'aperture' => t('Aperture value'),
+        'focal_length' => t('Focal length'),
       );
     }
     return $fields;
@@ -144,10 +144,10 @@ class Image extends MediaTypeBase {
         case 'exposure':
           return $this->getExifField($uri, 'ExposureTime');
 
-        case 'apperture':
+        case 'aperture':
           return $this->getExifField($uri, 'FNumber');
 
-        case 'focal_lenght':
+        case 'focal_length':
           return $this->getExifField($uri, 'FocalLength');
       }
     }
