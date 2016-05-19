@@ -5,3 +5,6 @@ package: Media
 core: 8.x
 dependencies:
   - media_entity
+
+test_dependencies:
+  - entity_browser
