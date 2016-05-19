@@ -18,6 +18,8 @@ class MediaEntityImageTest extends WebTestBase {
    */
   public static $modules = [
     'block',
+    'media_entity',
+    'entity_browser',
     'media_entity_image_test',
   ];
 
