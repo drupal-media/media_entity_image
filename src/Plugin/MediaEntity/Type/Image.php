@@ -246,4 +246,21 @@ class Image extends MediaTypeBase {
     return exif_read_data($uri, 'EXIF');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getDefaultName(MediaInterface $media) {
+    // The default name will be the filename of the source_field, if present,
+    // or the parent's defaultName implementation if it was not possible to
+    // retrieve the filename.
+    $source_field = $this->configuration['source_field'];
+
+    /** @var \Drupal\file\FileInterface $file */
+    if (!empty($source_field) && ($file = $this->entityTypeManager->getStorage('file')->load($media->{$source_field}->target_id))) {
+      return $file->getFilename();
+    }
+
+    return parent::getDefaultName($media);
+  }
+
 }
