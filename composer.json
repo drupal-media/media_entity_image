@@ -1,8 +1,8 @@
 {
   "name": "drupal/media_entity_image",
   "type": "drupal-module",
-  "description": "Local images integration for media entity.",
-  "keywords": ["Drupal"],
+  "description": "Local images integration for Drupal Media Entity.",
+  "keywords": ["Drupal", "media", "image"],
   "license": "GPL-2.0+",
   "homepage": "https://www.drupal.org/project/media_entity_image",
   "minimum-stability": "dev",
