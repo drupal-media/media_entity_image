@@ -10,5 +10,13 @@
     "issues": "https://github.com/drupal-media/media_entity_image/issues",
     "source": "https://github.com/drupal-media/media_entity_image"
   },
-  "require": { }
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/drupal-media/media_entity"
+    }
+  ],
+  "require": {
+    "drupal/media_entity": "dev-8.x-1.x"
+  }
 }
