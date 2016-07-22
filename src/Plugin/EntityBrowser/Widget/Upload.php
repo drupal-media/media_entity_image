@@ -5,6 +5,7 @@ namespace Drupal\media_entity_image\Plugin\EntityBrowser\Widget;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\entity_browser\Plugin\EntityBrowser\Widget\Upload as FileUpload;
+use Drupal\media_entity\MediaInterface;
 
 /**
  * Uses upload to create media entity images.
@@ -49,12 +50,13 @@ class Upload extends FileUpload {
   /**
    * {@inheritdoc}
    */
-  public function submit(array &$element, array &$form, FormStateInterface $form_state) {
+  protected function prepareEntities(array $form, FormStateInterface $form_state) {
+    $files = parent::prepareEntities($form, $form_state);
+
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $this->entityTypeManager
       ->getStorage('media_bundle')
       ->load($this->configuration['media_bundle']);
-    $files = $this->extractFiles($form_state);
 
     $images = [];
     foreach ($files as $file) {
@@ -63,12 +65,26 @@ class Upload extends FileUpload {
         'bundle' => $bundle->id(),
         $bundle->getTypeConfiguration()['source_field'] => $file,
       ]);
-      $image->save();
       $images[] = $image;
     }
 
-    $this->selectEntities($images, $form_state);
-    $this->clearFormValues($element, $form_state);
+    return $images;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submit(array &$element, array &$form, FormStateInterface $form_state) {
+    if (!empty($form_state->getTriggeringElement()['#eb_widget_main_submit'])) {
+      $images = $this->prepareEntities($form, $form_state);
+      array_walk(
+        $images,
+        function (MediaInterface $media) { $media->save(); }
+      );
+
+      $this->selectEntities($images, $form_state);
+      $this->clearFormValues($element, $form_state);
+    }
   }
 
   /**
