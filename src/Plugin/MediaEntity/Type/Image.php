@@ -80,19 +80,19 @@ class Image extends MediaTypeBase {
    */
   public function providedFields() {
     $fields = array(
-      'mime' => t('File MIME'),
-      'width' => t('Width'),
-      'height' => t('Height'),
+      'mime' => $this->t('File MIME'),
+      'width' => $this->t('Width'),
+      'height' => $this->t('Height'),
     );
 
     if (!empty($this->configuration['gather_exif'])) {
       $fields += array(
-        'model' => t('Camera model'),
-        'created' => t('Image creation datetime'),
-        'iso' => t('Iso'),
-        'exposure' => t('Exposure time'),
-        'aperture' => t('Aperture value'),
-        'focal_length' => t('Focal length'),
+        'model' => $this->t('Camera model'),
+        'created' => $this->t('Image creation datetime'),
+        'iso' => $this->t('Iso'),
+        'exposure' => $this->t('Exposure time'),
+        'aperture' => $this->t('Aperture value'),
+        'focal_length' => $this->t('Focal length'),
       );
     }
     return $fields;
@@ -171,20 +171,20 @@ class Image extends MediaTypeBase {
 
     $form['source_field'] = [
       '#type' => 'select',
-      '#title' => t('Field with source information'),
-      '#description' => t('Field on media entity that stores Image file. You can create a bundle without selecting a value for this dropdown initially. This dropdown can be populated after adding fields to the bundle.'),
+      '#title' => $this->t('Field with source information'),
+      '#description' => $this->t('Field on media entity that stores Image file. You can create a bundle without selecting a value for this dropdown initially. This dropdown can be populated after adding fields to the bundle.'),
       '#default_value' => empty($this->configuration['source_field']) ? NULL : $this->configuration['source_field'],
       '#options' => $options,
     ];
 
     $form['gather_exif'] = [
       '#type' => 'select',
-      '#title' => t('Whether to gather exif data.'),
-      '#description' => t('Gather exif data using exif_read_data().'),
+      '#title' => $this->t('Whether to gather exif data.'),
+      '#description' => $this->t('Gather exif data using exif_read_data().'),
       '#default_value' => empty($this->configuration['gather_exif']) || !function_exists('exif_read_data') ? 0 : $this->configuration['gather_exif'],
       '#options' => [
-        0 => t('No'),
-        1 => t('Yes'),
+        0 => $this->t('No'),
+        1 => $this->t('Yes'),
       ],
       '#disabled' => (function_exists('exif_read_data')) ? FALSE : TRUE,
     ];
