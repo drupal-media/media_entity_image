@@ -103,11 +103,10 @@ class Image extends MediaTypeBase {
    */
   public function getField(MediaInterface $media, $name) {
     $source_field = $this->configuration['source_field'];
-    $property_name = $media->{$source_field}->first()->mainPropertyName();
 
     // Get the file, image and exif data.
     /** @var \Drupal\file\FileInterface $file */
-    $file = $this->entityTypeManager->getStorage('file')->load($media->{$source_field}->first()->{$property_name});
+    $file = $media->{$source_field}->entity;
     $image = $this->imageFactory->get($file->getFileUri());
     $uri = $file->getFileUri();
 
@@ -206,7 +205,7 @@ class Image extends MediaTypeBase {
     $source_field = $this->configuration['source_field'];
 
     /** @var \Drupal\file\FileInterface $file */
-    if ($file = $this->entityTypeManager->getStorage('file')->load($media->{$source_field}->target_id)) {
+    if ($file = $media->{$source_field}->entity) {
       return $file->getFileUri();
     }
 
@@ -256,7 +255,7 @@ class Image extends MediaTypeBase {
     $source_field = $this->configuration['source_field'];
 
     /** @var \Drupal\file\FileInterface $file */
-    if (!empty($source_field) && ($file = $this->entityTypeManager->getStorage('file')->load($media->{$source_field}->target_id))) {
+    if (!empty($source_field) && ($file = $media->{$source_field}->entity)) {
       return $file->getFilename();
     }
 
