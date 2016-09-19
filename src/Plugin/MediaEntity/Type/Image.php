@@ -185,6 +185,9 @@ class Image extends MediaTypeBase {
         0 => $this->t('No'),
         1 => $this->t('Yes'),
       ],
+      '#ajax' => [
+        'callback' => '::ajaxTypeProviderData',
+      ],
       '#disabled' => (function_exists('exif_read_data')) ? FALSE : TRUE,
     ];
 
