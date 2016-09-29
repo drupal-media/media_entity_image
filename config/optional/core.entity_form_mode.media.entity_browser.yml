@@ -1,0 +1,9 @@
+id: media.entity_browser
+label: 'Entity Browser'
+targetEntityType: media
+langcode: en
+status: true
+cache: true
+dependencies:
+  module:
+    - media_entity
