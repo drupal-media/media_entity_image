@@ -110,7 +110,7 @@ class Upload extends FileUpload {
     }
 
     if (empty($bundle_options)) {
-      $url = Url::fromRoute('media.bundle_add')->toString();
+      $url = Url::fromRoute('entity.media_bundle.add_form')->toString();
       $form['media_bundle'] = [
         '#markup' => $this->t("You don't have media bundle of the Image type. You should <a href='!link'>create one</a>", ['!link' => $url]),
       ];
