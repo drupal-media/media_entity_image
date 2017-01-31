@@ -19,6 +19,9 @@ entity_browser.browser.widget.media_entity_image_upload:
     upload_location:
       type: string
       label: 'Upload location'
+    multiple:
+      type: boolean
+      label: 'Allow multiple uploads'
     extensions:
       type: string
       label: 'Allowed file extensions'

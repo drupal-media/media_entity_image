@@ -13,7 +13,8 @@ use Drupal\media_entity\MediaInterface;
  * @EntityBrowserWidget(
  *   id = "media_entity_image_upload",
  *   label = @Translation("Upload images"),
- *   description = @Translation("Upload widget that creates media entity images.")
+ *   description = @Translation("Upload widget that creates media entity images."),
+ *   auto_select = FALSE
  * )
  */
 class Upload extends FileUpload {
