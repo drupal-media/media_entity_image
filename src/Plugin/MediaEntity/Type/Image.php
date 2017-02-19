@@ -26,14 +26,14 @@ class Image extends MediaTypeBase {
   /**
    * The image factory service..
    *
-   * @var \Drupal\Core\Image\ImageFactory;
+   * @var \Drupal\Core\Image\ImageFactory
    */
   protected $imageFactory;
 
   /**
    * The exif data.
    *
-   * @var array.
+   * @var array
    */
   protected $exif;
 

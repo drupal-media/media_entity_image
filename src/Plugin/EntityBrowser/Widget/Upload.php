@@ -80,7 +80,9 @@ class Upload extends FileUpload {
       $images = $this->prepareEntities($form, $form_state);
       array_walk(
         $images,
-        function (MediaInterface $media) { $media->save(); }
+        function (MediaInterface $media) {
+          $media->save();
+        }
       );
 
       $this->selectEntities($images, $form_state);
