@@ -2,9 +2,12 @@
 
 namespace Drupal\media_entity_image\Plugin\EntityBrowser\Widget;
 
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\entity_browser\Plugin\EntityBrowser\Widget\Upload as FileUpload;
+use Drupal\media_entity\Entity\Media;
 use Drupal\media_entity\MediaInterface;
 
 /**
@@ -26,6 +29,7 @@ class Upload extends FileUpload {
     return [
       'extensions' => 'jpg jpeg png gif',
       'media_bundle' => NULL,
+      'form_display' => 'entity_browser',
     ] + parent::defaultConfiguration();
   }
 
@@ -45,6 +49,16 @@ class Upload extends FileUpload {
     $form = parent::getForm($original_form, $form_state, $aditional_widget_parameters);
     $form['upload']['#upload_validators']['file_validate_extensions'] = [$this->configuration['extensions']];
 
+    // Create an empty entity that will be used to generate teh entity form.
+    $entity = Media::create([
+      'bundle' => $this->configuration['media_bundle'],
+    ]);
+
+    // Attach the Entity form to Entity Browser form.
+    $form['entity_form'] = [];
+    $form_display = EntityFormDisplay::collectRenderDisplay($entity, $this->configuration['form_display']);
+    $form_display->buildForm($entity, $form['entity_form'], $form_state);
+
     return $form;
   }
 
@@ -53,6 +67,7 @@ class Upload extends FileUpload {
    */
   protected function prepareEntities(array $form, FormStateInterface $form_state) {
     $files = parent::prepareEntities($form, $form_state);
+    $fields = $this->getSubmittedMediaFields($form_state);
 
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $this->entityTypeManager
@@ -66,6 +81,11 @@ class Upload extends FileUpload {
         'bundle' => $bundle->id(),
         $bundle->getTypeConfiguration()['source_field'] => $file,
       ]);
+
+      // Copy the field values from the form to the Media entity.
+      foreach ($fields as $field_name) {
+        $image->set($field_name, $form_state->getValue($field_name));
+      }
       $images[] = $image;
     }
 
@@ -78,6 +98,7 @@ class Upload extends FileUpload {
   public function submit(array &$element, array &$form, FormStateInterface $form_state) {
     if (!empty($form_state->getTriggeringElement()['#eb_widget_main_submit'])) {
       $images = $this->prepareEntities($form, $form_state);
+
       array_walk(
         $images,
         function (MediaInterface $media) {
@@ -127,7 +148,38 @@ class Upload extends FileUpload {
       ];
     }
 
+    $form['form_display'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Form Display'),
+      '#default_value' => $this->configuration['form_display'],
+      '#required' => TRUE,
+    ];
+
     return $form;
   }
 
+  /**
+   * Gets the list of the fields of the Media entity, based on its bundle
+   * filtering them so that only those which have been submitted are returned.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   * @return array
+   */
+  private function getSubmittedMediaFields(FormStateInterface $form_state) {
+    $configured_fields = [];
+
+    // Get the list of all the fields
+    $field_list= Media::create([
+      'bundle' => $this->configuration['media_bundle'],
+    ])->getFieldDefinitions();
+
+    // Filter out the fields that have not been used in this form
+    foreach ($field_list as $field_name => $field_definition) {
+      if ( $form_state->hasValue($field_name) ) {
+        $configured_fields[] =  $field_name;
+      }
+    }
+
+    return $configured_fields;
+  }
 }
